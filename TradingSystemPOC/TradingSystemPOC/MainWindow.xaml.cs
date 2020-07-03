@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -36,13 +35,13 @@ namespace TradingSystemPOC
             IPAddress destinationIP = IPAddress.Parse("192.168.1.4");
             int destinationPort = System.Convert.ToInt32("2085");
             IPEndPoint endPoint = new IPEndPoint(destinationIP, destinationPort);
-            JObject obj = new JObject();
+            string obj = "";
             sendMessage(obj);
             config.socket = socket;
             config.endPoint = endPoint;
             InitializeComponent();            
         }
-        public void sendMessage(JObject message)
+        public void sendMessage(string message)
         {
             config.socket.Connect(config.endPoint);            
             byte[] vs = System.Text.Encoding.ASCII.GetBytes(message.ToString());
