@@ -28,7 +28,7 @@ namespace TradingSystemServ
 
             foreach (var item in vs)
             {
-                tradingService.Transcation(item);
+                tradingService.Transaction(item);
             }
 
             Socket m_ListenSocket;

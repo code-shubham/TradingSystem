@@ -43,10 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Implementation\MarketTradeService.cs" />
     <Compile Include="Implementation\TradingService.cs" />
     <Compile Include="Models\MarketTrade.cs" />
-    <Compile Include="Models\Model.cs" />
     <Compile Include="Models\CreateOrderModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
