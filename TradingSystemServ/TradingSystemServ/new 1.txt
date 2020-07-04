@@ -65,13 +65,16 @@ namespace TradingSystemServ.Implementation
         /// <returns></returns>
         internal bool CreateSellOrder(CreateOrderModel createOrderSell)
         {
-
+            //Gets the Current Sell Quantity
             int sellValue = createOrderSell.Quantity;
+
+            //Proceed the sell order only if one Buy item is present else return false.
             if (myOrderedDictionary.Values.Count > 0)
             {
                 OrderedDictionary LocalOrderedDict = new OrderedDictionary();
                 List<CreateOrderModel> LocalcreateOrderModelsList = new List<CreateOrderModel>();
 
+                //Add only those object having same values as sell price
                 foreach (CreateOrderModel item in myOrderedDictionary.Keys)
                 {
                     if (item.Price == createOrderSell.Price)
@@ -81,6 +84,7 @@ namespace TradingSystemServ.Implementation
                     }
                 }
 
+                //Gets the keys and values of Dictionary
                 ICollection keyCollection = LocalOrderedDict.Keys;
                 ICollection valueCollection = LocalOrderedDict.Values;
 
@@ -90,26 +94,35 @@ namespace TradingSystemServ.Implementation
                 LocalOrderedDict.Values.CopyTo(myValues, 0);
                 LocalOrderedDict.Keys.CopyTo(myKeys, 0);
 
+                //Add all the values of dictionary to find the sum
                 int SumOfAllQuantity = myValues.Sum();
                 int tempval = 0;
 
+                //Proceed only if the sum is greater than current sale value else return false.
                 if (SumOfAllQuantity > sellValue)
                 {
                     for (int i = 0; i < myKeys.Count(); i++)
                     {
+                        // Add Every Key untill it equates or Exceeds the current sale value in cronological order
                         tempval += myValues[i];
                         if (tempval >= SumOfAllQuantity)
                         {
-
+                            //Remove the Traded item from Dictionary and List
+                            //Sell the values which are getting sold and resent the values with not sold ones.
                             LocalOrderedDict.RemoveAt(0);
                             LocalOrderedDict.Add(myValues[i], sellValue - (SumOfAllQuantity - myValues[i]));
                             LocalcreateOrderModelsList[0].Quantity = sellValue - (SumOfAllQuantity - myValues[i]);
+
+                            //Add Trade with the details of Buyer and Seller
                             ProcessMarketTrade(LocalcreateOrderModelsList[0].userId, createOrderSell.userId, createOrderSell.Symbol, LocalcreateOrderModelsList[0].Quantity, LocalcreateOrderModelsList[0].Price);
                             return true;
                         }
                         else
                         {
+                            //Add Trade with the details of Buyer and Seller
                             ProcessMarketTrade(LocalcreateOrderModelsList[0].userId, createOrderSell.userId, createOrderSell.Symbol, LocalcreateOrderModelsList[0].Quantity, LocalcreateOrderModelsList[0].Price);
+
+                            //Remove the Traded item from Dictionary and List
                             LocalOrderedDict.RemoveAt(0);
                             LocalcreateOrderModelsList.RemoveAt(0);
                         }

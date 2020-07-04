@@ -15,47 +15,31 @@ namespace TradingSystemServ
     class Program
     {
 
-        static void Main(string[] args)
+
+        //readonly is to reduce code smells
+        private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private static readonly List<Socket> clientSockets = new List<Socket>();
+        private const int BUFFER_SIZE = 2048;
+        private const int PORT = 100;
+        private static readonly byte[] buffer = new byte[BUFFER_SIZE];
+
+        static void Main()
         {
-            TradingService tradingService = new TradingService();
-            
+            Console.Title = "Server";
+            SetupServer();
+            Console.ReadLine(); // When we press enter close everything
+            CloseAllSockets();
+        }
 
-            string[] vs = new string[10];
-            vs[0] = "Order,A,Stock A,5,2.6,Buy";
-            vs[1] = "Order,B,Stock A,10,2.7,Buy";
-            vs[2] = "Order,A,Stock A,5,2.6,Buy";
-            vs[3] = "Order,C,Stock A,17,2.6,sell";
-
-            foreach (var item in vs)
-            {
-                tradingService.Transaction(item);
-            }
-
-            Socket m_ListenSocket;
-            m_ListenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-            int iPort = 2085;
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, iPort); 
-            m_ListenSocket.Bind(endPoint);
+        private static void SetupServer()
+        {
+            Console.WriteLine("Setting up server...");
+            serverSocket.Bind(new IPEndPoint(IPAddress.Any, 2085));
+            serverSocket.Listen(0);
+            serverSocket.BeginAccept(AcceptCallback, null);
+            Console.WriteLine("Server setup complete");
             Console.WriteLine(LocalIpAddress());
-            Console.WriteLine(iPort);
-
-            m_ListenSocket.Listen(4);
-
-            Socket AcceptedSocket = m_ListenSocket.Accept();
-
-            byte[] reciveBuffer = new byte[1024];
-            int iRecieveByteCount;
-
-            iRecieveByteCount = AcceptedSocket.Receive(reciveBuffer, SocketFlags.None);
-            if(iRecieveByteCount >0)
-            {
-
-                string msg = Encoding.ASCII.GetString(reciveBuffer, 0, iRecieveByteCount);                
-            }
-            AcceptedSocket.Shutdown(SocketShutdown.Both);
-            AcceptedSocket.Close();
-
+            
         }
         public static string LocalIpAddress()
         {
@@ -72,6 +56,77 @@ namespace TradingSystemServ
 
             }
             return localIp;
+        }   
+        /// <summary>
+        /// Close all connected client     
+        /// </summary>
+        private static void CloseAllSockets()
+        {
+            foreach (Socket socket in clientSockets)
+            {
+                socket.Shutdown(SocketShutdown.Both);
+                socket.Close();
+            }
+
+            serverSocket.Close();
+        }
+
+        private static void AcceptCallback(IAsyncResult AR)
+        {
+            Socket socket;
+
+            try
+            {
+                socket = serverSocket.EndAccept(AR);
+            }
+            catch (ObjectDisposedException)
+            {
+                return;
+            }
+
+            clientSockets.Add(socket);
+            socket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket);
+            Console.WriteLine("Client connected, waiting for request...");
+            serverSocket.BeginAccept(AcceptCallback, null);
+        }
+
+        private static void ReceiveCallback(IAsyncResult AR)
+        {
+            Socket current = (Socket)AR.AsyncState;
+            int received;
+
+            try
+            {
+                received = current.EndReceive(AR);
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("Client forcefully disconnected");
+                // Don't shutdown because the socket may be disposed and its disconnected anyway.
+                current.Close();
+                clientSockets.Remove(current);
+                return;
+            }
+
+            byte[] recBuf = new byte[received];
+            Array.Copy(buffer, recBuf, received);
+            string text = Encoding.ASCII.GetString(recBuf);
+            Console.WriteLine("Request Recieved");
+
+            if (text.Length > 0) // Client requested 
+            {
+                TradingService tradingService = new TradingService();
+                tradingService.Transaction(text, current);
+            }
+
+            current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
+        }
+
+        public static void SendData(string data, Socket currentSocket)
+        {
+            byte[] dataBuffer = Encoding.ASCII.GetBytes(data);
+            currentSocket.Send(dataBuffer);
+            Console.WriteLine("Data Send to Client");
         }
     }
 }
