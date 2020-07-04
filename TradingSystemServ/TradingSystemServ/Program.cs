@@ -7,6 +7,8 @@ using System.Windows;
 using System.Net;
 using System.Net.Sockets;
 using TradingSystemServ.Models;
+using TradingSystemServ.Implementation;
+using System.Collections.Specialized;
 
 namespace TradingSystemServ
 {
@@ -15,8 +17,19 @@ namespace TradingSystemServ
 
         static void Main(string[] args)
         {
-            TradesService tradesService = new TradesService();
-            tradesService.Transcition("Order:0. userID:123. Symbol:AP. Quantity:99. Price:108.00.");
+            TradingService tradingService = new TradingService();
+            
+
+            string[] vs = new string[10];
+            vs[0] = "Order,A,Stock A,5,2.6,Buy";
+            vs[1] = "Order,B,Stock A,10,2.7,Buy";
+            vs[2] = "Order,A,Stock A,5,2.6,Buy";
+            vs[3] = "Order,C,Stock A,17,2.6,sell";
+
+            foreach (var item in vs)
+            {
+                tradingService.Transcation(item);
+            }
 
             Socket m_ListenSocket;
             m_ListenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

@@ -10,9 +10,6 @@ namespace TradingSystemServ.Models
 {
     public  class Model
     {
-        public OrderedDictionary myOrderedDictionary { get; set; }
-        //  public Dictionary <string, int> UsersAndQuantity { get; set; }
-        public List<CreateOrderModel> createOrderModelsList { get; set; }
-        public List<MarketTrade> marketTradesList { get; set; }
+       
     }
 }

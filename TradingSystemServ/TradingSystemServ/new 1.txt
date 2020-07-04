@@ -1,0 +1,115 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TradingSystemServ.Models;
+using System.Collections.Specialized;
+using System.Collections;
+
+namespace TradingSystemServ.Implementation
+{
+    public class TradingService
+    {
+        Model model;
+        public void Transcation(string Transcation)
+        {
+            model = new Model();
+
+            model.myOrderedDictionary = new OrderedDictionary();
+            model.createOrderModelsList = new List<CreateOrderModel>();
+
+            string[] array = new string[5];
+            if (Transcation.Contains("Order"))
+            {
+                array = Transcation.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
+            }
+            CreateOrderModel createOrder = new CreateOrderModel() {
+                userId = array[1],
+                Symbol = array[2],
+                Quantity = int.Parse(array[3]),
+                Price = double.Parse(array[4])                      
+            };
+
+            if(Transcation.Contains("Buy"))
+            {
+                CreateBuyOrder(createOrder);
+            }
+            else if(Transcation.Contains("sell"))
+            {
+
+            }
+        }
+
+        internal void CreateSellOrder(CreateOrderModel createOrderSell)
+        {
+            model = new Model();
+            int sellValue = createOrderSell.Quantity;
+            if(model.myOrderedDictionary.Values.Count > 0)
+            {
+                OrderedDictionary LocalOrderedDict = new OrderedDictionary();
+                List<CreateOrderModel> LocalcreateOrderModelsList = new List<CreateOrderModel>();
+
+                LocalOrderedDict = model.myOrderedDictionary;
+                LocalcreateOrderModelsList = model.createOrderModelsList;
+
+                ICollection keyCollection = LocalOrderedDict.Keys;
+                ICollection valueCollection = LocalOrderedDict.Values;
+
+                string[] myKeys = new string[LocalOrderedDict.Keys.Count];
+                int[] myValues = new int[LocalOrderedDict.Values.Count];
+
+                LocalOrderedDict.Values.CopyTo(myValues, 0);
+                LocalOrderedDict.Keys.CopyTo(myKeys, 0);
+
+                int SumOfAllQuantity = myValues.Sum();
+                int tempval = 0;
+
+                if(SumOfAllQuantity > sellValue)
+                {
+                    for (int i = 0; i < myKeys.Count(); i++)
+                    {
+                        tempval += myValues[i];
+                        if(tempval >= SumOfAllQuantity)
+                        {
+                            LocalOrderedDict[myKeys[0]] = sellValue - tempval;
+                            LocalcreateOrderModelsList[0].Quantity = sellValue - tempval;
+                            ProcessMarketTrade(LocalcreateOrderModelsList[0].userId, createOrderSell.userId, createOrderSell.Symbol, LocalcreateOrderModelsList[0].Quantity, LocalcreateOrderModelsList[0].Price);
+                            break;
+                        }
+                        else
+                        {
+                            ProcessMarketTrade(LocalcreateOrderModelsList[0].userId, createOrderSell.userId, createOrderSell.Symbol, LocalcreateOrderModelsList[0].Quantity, LocalcreateOrderModelsList[0].Price);
+                            LocalOrderedDict.RemoveAt(0);
+                            LocalcreateOrderModelsList.RemoveAt(0);
+                            
+                        }      
+                    }
+                }
+            }           
+        }
+
+        internal void CreateBuyOrder(CreateOrderModel createOrder)
+        {
+            model = new Model();
+
+            model.createOrderModelsList.Add(createOrder);
+
+            
+            model.myOrderedDictionary.Add(createOrder.userId, createOrder.Quantity);
+
+        }
+
+        internal void ProcessMarketTrade(string BuyeruserID, string SellerID, string symbol, int Quantity, double price)
+        {
+            MarketTrade marketTrade = new MarketTrade()
+            {
+                BuyUserID = BuyeruserID,
+                SellerUserID = SellerID,
+                symbol = symbol,
+                TradedQuantity = Quantity,
+                TradedPrice = price
+            };
+        }
+    }
+}
