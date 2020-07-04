@@ -1,23 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Specialized;
 
 namespace TradingSystemServ.Models
 {
-    public class Model
+    public  class Model
     {
-        public string Buyer { get; set; }
-        public string Seller { get; set; }
-
-        public int Qty { get; set; }
-        public int Price { get; set; }
-        public string Symbol { get; set; }
-        public int MyBidQty { get; set; }
-        public int MktBidQty { get; set; }
-      
-        public int MyAskQty { get; set; }
-        public int MktAskQty { get; set; }
+        public OrderedDictionary myOrderedDictionary { get; set; }
+        //  public Dictionary <string, int> UsersAndQuantity { get; set; }
+        public List<CreateOrderModel> createOrderModelsList { get; set; }
+        public List<MarketTrade> marketTradesList { get; set; }
     }
 }

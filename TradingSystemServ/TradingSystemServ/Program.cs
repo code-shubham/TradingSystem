@@ -15,11 +15,14 @@ namespace TradingSystemServ
 
         static void Main(string[] args)
         {
+            TradesService tradesService = new TradesService();
+            tradesService.Transcition("Order:0. userID:123. Symbol:AP. Quantity:99. Price:108.00.");
+
             Socket m_ListenSocket;
             m_ListenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             int iPort = 2085;
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, iPort);
+            IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, iPort); 
             m_ListenSocket.Bind(endPoint);
             Console.WriteLine(LocalIpAddress());
             Console.WriteLine(iPort);
@@ -34,9 +37,8 @@ namespace TradingSystemServ
             iRecieveByteCount = AcceptedSocket.Receive(reciveBuffer, SocketFlags.None);
             if(iRecieveByteCount >0)
             {
-                string msg = Encoding.ASCII.GetString(reciveBuffer, 0, iRecieveByteCount);
-                // serialize the client values to a model
-                //Model model = JsonConvert.DeserializeObject<Model>(msg);
+
+                string msg = Encoding.ASCII.GetString(reciveBuffer, 0, iRecieveByteCount);                
             }
             AcceptedSocket.Shutdown(SocketShutdown.Both);
             AcceptedSocket.Close();
