@@ -26,10 +26,10 @@ namespace TradingSystemServ
         static void Main()
         {
 
-            ///Uncomment Below for Test
+            //Uncomment Below to sanity Test the system 
 
             //TradingService tradingService = new TradingService();
-            //string[] vs = new string[10];
+            //string[] vs = new string[4];
             //vs[0] = "<Create Order>,A,Stock A,5,2.6,<Buy>";
             //vs[1] = "<Create Order>,B,Stock A,10,2.7,<Buy>";
             //vs[2] = "<Create Order>,A,Stock A,15,2.6,<Buy>";
