@@ -158,6 +158,7 @@ namespace TradingSystemServ.Implementation
             return false;
         }
 
+        #region Matching System
         /// <summary>
         /// creates the order when Buy is specified in the input transcation.
         /// Addes the value Mapped Object into a List and Dictionary
@@ -192,6 +193,7 @@ namespace TradingSystemServ.Implementation
             SendDataToClient(OutData);
         }
 
+        #endregion
         /// <summary>
         /// Process All the Pending Sell Transcations
         /// </summary>
