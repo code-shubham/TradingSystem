@@ -65,7 +65,7 @@ namespace TradingSystemServ.Implementation
                     ProcessPendingSaleOrders();                
             }
 
-            else if (Transaction.Contains("<sell>"))
+            else if (Transaction.Contains("<Sell>"))
             {
                 // Add  The Sell record in Pending Queue
                 PendingSellOrders.Add(createOrder);
@@ -213,7 +213,10 @@ namespace TradingSystemServ.Implementation
         {
             byte[] Buffer = Encoding.ASCII.GetBytes(OutData);
             if (CurrentSocket != null)
-                CurrentSocket.Send(Buffer);
+            {
+
+            }
+               // CurrentSocket.Send(Buffer);
 
         }
 

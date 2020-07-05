@@ -25,6 +25,22 @@ namespace TradingSystemServ
 
         static void Main()
         {
+
+            ///Uncomment Below for Test
+
+            //TradingService tradingService = new TradingService();
+            //string[] vs = new string[10];
+            //vs[0] = "<Create Order>,A,Stock A,5,2.6,<Buy>";
+            //vs[1] = "<Create Order>,B,Stock A,10,2.7,<Buy>";
+            //vs[2] = "<Create Order>,A,Stock A,15,2.6,<Buy>";
+            //vs[3] = "<Create Order>,C,Stock A,17,2.6,<Sell>";
+
+            //foreach (var item in vs)
+            //{
+            //    tradingService.Transaction(item, serverSocket);
+            //}
+
+
             Console.Title = "Server";
             SetupServer();
             Console.ReadLine(); // When we press enter close everything
