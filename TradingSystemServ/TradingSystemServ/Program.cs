@@ -120,13 +120,6 @@ namespace TradingSystemServ
             }
 
             current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
-        }
-
-        public static void SendData(string data, Socket currentSocket)
-        {
-            byte[] dataBuffer = Encoding.ASCII.GetBytes(data);
-            currentSocket.Send(dataBuffer);
-            Console.WriteLine("Data Send to Client");
-        }
+        }    
     }
 }

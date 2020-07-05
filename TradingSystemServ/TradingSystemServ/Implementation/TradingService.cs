@@ -168,6 +168,8 @@ namespace TradingSystemServ.Implementation
                 TradedPrice = price
             };
             marketTradesList.Add(marketTrade);
+            string OutData = "MarketTrade," + marketTrade.BuyUserID + "," + marketTrade.SellerUserID + "," + marketTrade.symbol + "," + marketTrade.TradedQuantity + "," + marketTrade.TradedPrice;
+            SendDataToClient(OutData);
         }
 
         /// <summary>
@@ -181,6 +183,18 @@ namespace TradingSystemServ.Implementation
                 if (status)
                     PendingSellOrders.Remove(PendingSellOrders[i]);
             }
+        }
+
+        /// <summary>
+        /// Sends the Data and Current Trades to the client machines in the current socket Session.
+        /// </summary>
+        /// <param name="OutData"></param>
+        internal void SendDataToClient(string OutData)
+        {
+            byte[] Buffer = Encoding.ASCII.GetBytes(OutData);
+            if (CurrentSocket != null)
+                CurrentSocket.Send(Buffer);
+
         }
 
     }
