@@ -97,7 +97,7 @@ namespace TradingSystemServ.Implementation
                 //Add only those object having same values as sell price
                 foreach (CreateOrderModel item in myOrderedDictionary.Keys)
                 {
-                    if (item.Price == createOrderSell.Price)
+                    if ((item.Price == createOrderSell.Price) && (item.userId != createOrderSell.userId))
                     {
                         LocalOrderedDict.Add(item,item.Quantity);
                         LocalcreateOrderModelsList.Add(item);
