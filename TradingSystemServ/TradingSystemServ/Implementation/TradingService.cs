@@ -88,7 +88,7 @@ namespace TradingSystemServ.Implementation
             //Gets the Current Sell Quantity
             int sellValue = createOrderSell.Quantity;
 
-            //Proceed the sell order only if one Buy item is present else return false.
+            //Proceed the sell order only if atleast one Buy item is present else return false.
             if (myOrderedDictionary.Values.Count > 0)
             {
                 OrderedDictionary LocalOrderedDict = new OrderedDictionary();
