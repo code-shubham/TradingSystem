@@ -22,7 +22,7 @@ namespace TradingSystemServ.Implementation
         //Contains Successfully Traded items
         public List<MarketTrade> marketTradesList = new List<MarketTrade>();
 
-        //Boolean value indicating a success or failure of a Traded
+        //Boolean value indicating a success or failure of a Trade
         public bool SellOrderStatus;
 
         //Contains All the Pending sell Orders
