@@ -13,7 +13,7 @@ namespace TradingSystemServ.Implementation
 {
     public class TradingService
     {
-        //Contains CreateOrder Model Object as a key and Quantities as a List.
+        //Contains CreateOrder Model Object as a key and Quantities as values.
         public OrderedDictionary myOrderedDictionary = new OrderedDictionary();
 
         //Contains CreateOrderModel as its element
